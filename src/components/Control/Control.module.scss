@@ -1,0 +1,14 @@
+.Control {
+  position: fixed;
+  bottom: 0;
+  height: 30%;
+  width: 100%;
+  background: #FFFFFF;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  &Block {
+    display: flex;
+    flex-direction: column;
+    width: 10%;
+  }
+}

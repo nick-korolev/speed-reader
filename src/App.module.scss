@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Goudy+Bookletter+1911&display=swap');
+
+.App {
+  height: 100vh;
+  font-family: 'Goudy Bookletter 1911', serif;
+  font-size: 24px;
+  line-height: 1.5;
+  scroll-behavior: smooth;
+  overflow: hidden !important;
+  position: relative;
+}
+body {
+  margin: 0
+}
