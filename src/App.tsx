@@ -7,6 +7,10 @@ function App() {
   const [currentCursor, setCurrentCursor] = useState(() => {
     const localValue = localStorage.getItem('currentCursor');
     if (localValue) {
+      const parsed = parseInt(localValue);
+      if (isNaN(parsed)) {
+        return 0;
+      }
       return parseInt(localValue);
     }
     return 0;

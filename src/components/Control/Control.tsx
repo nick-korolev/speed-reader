@@ -39,7 +39,7 @@ export const Control: React.FC<IControlProps> = ({wpm, onWPMChange, onTextChange
   }
 
   const handleCursorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const cursor = parseInt(event.target.value);
+    const cursor = parseInt(event.target.value || '0');
     onCursorChange(cursor);
   }
   return <>
