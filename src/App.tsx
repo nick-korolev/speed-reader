@@ -1,6 +1,6 @@
 import {SpeedReader} from "./components/Reader/Reader.tsx";
 import {Control} from "./components/Control/Control.tsx";
-import {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import s from './App.module.scss'
 
 function App() {
@@ -48,21 +48,33 @@ function App() {
     localStorage.setItem('wpm', String(newWpm))
   }, []);
 
-  const toggle = () => {
+  const toggle = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    event.preventDefault();
     setActive(prevState => !prevState)
   }
 
+  const handleCursorChange = (cursor: number) => {
+    setCurrentCursor(cursor);
+  }
+
   return (
-    <div className={s.App}>
+    <div className={s.App} >
+      <div className={s.Overlay} onClick={toggle}></div>
       <SpeedReader
         text={text}
         wpm={wpm}
         active={active}
-        onActivityChange={toggle}
         currentCursor={currentCursor}
         onCurrentCursorChange={handleCurrentCursorChange}
       />
-      {!active && <Control wpm={wpm} onWPMChange={handleWPMChange} onTextChange={handleTextChange}/>}
+      {!active && <Control
+          wpm={wpm}
+          onWPMChange={handleWPMChange}
+          onTextChange={handleTextChange}
+          onCursorChange={handleCursorChange}
+          cursor={currentCursor}
+      />}
     </div>
   );
 }

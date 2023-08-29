@@ -5,6 +5,8 @@ interface IControlProps {
   onWPMChange: (wpm: number) => void;
   wpm: number;
   onTextChange: (text: string) => void;
+  cursor: number;
+  onCursorChange: (cursor: number) => void;
 }
 
 function cleanText(text: string) {
@@ -12,7 +14,7 @@ function cleanText(text: string) {
   return text;
 }
 
-export const Control: React.FC<IControlProps> = ({wpm, onWPMChange, onTextChange}) => {
+export const Control: React.FC<IControlProps> = ({wpm, onWPMChange, onTextChange, cursor, onCursorChange}) => {
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     // const worker = new Worker('./worker.js');
     const file = event.target.files?.[0];
@@ -35,6 +37,11 @@ export const Control: React.FC<IControlProps> = ({wpm, onWPMChange, onTextChange
     //   type: 'parse',
     // });
   }
+
+  const handleCursorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const cursor = parseInt(event.target.value);
+    onCursorChange(cursor);
+  }
   return <>
     <div className={s.Control}>
       <div className={s.ControlBlock}>
@@ -44,6 +51,10 @@ export const Control: React.FC<IControlProps> = ({wpm, onWPMChange, onTextChange
       <div className={s.ControlBlock}>
         <label>Text</label>
         <input type="file" placeholder="Text" onChange={handleFileChange}/>
+      </div>
+      <div className={s.ControlBlock}>
+        <label>Cursor</label>
+        <input value={cursor} type="number" placeholder="Cursor" onChange={handleCursorChange}/>
       </div>
     </div>
   </>
