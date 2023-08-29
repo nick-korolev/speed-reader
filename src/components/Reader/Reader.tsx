@@ -13,7 +13,6 @@ interface ISpeedReaderProps {
 const _SpeedReader: React.FC<ISpeedReaderProps> = ({ currentCursor, onCurrentCursorChange, active, text, wpm = 300 }) => {
 
     const sentences = text.split(". ");
-    const words = text.split(" ");
     const listRef = useRef<List | null>(null);
 
     const speed = 60000 / wpm;
@@ -39,12 +38,12 @@ const _SpeedReader: React.FC<ISpeedReaderProps> = ({ currentCursor, onCurrentCur
     }
   }, [currentCursor]);
 
-  const getItemSize = (index: number) => {
+  const getItemSize = () => {
     // Assume a basic uniform size for simplicity, but you can calculate it differently if you like.
     return 30;
   };
 
-  const Row = ({ index, style }: any) => {
+  const Row = ({ index, style }: never) => {
     const isCurrentRow = index === currentCursor;
     return (
       <div style={style} className={s.reader}>
@@ -70,6 +69,8 @@ const _SpeedReader: React.FC<ISpeedReaderProps> = ({ currentCursor, onCurrentCur
         width={window.innerWidth} // viewport width
         className={s.list}
       >
+        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+        {/*@ts-ignore*/}
         {Row}
       </List>
     </div>
