@@ -39,7 +39,6 @@ const _SpeedReader: React.FC<ISpeedReaderProps> = ({ currentCursor, onCurrentCur
   }, [currentCursor]);
 
   const getItemSize = () => {
-    // Assume a basic uniform size for simplicity, but you can calculate it differently if you like.
     return 30;
   };
 
@@ -48,12 +47,7 @@ const _SpeedReader: React.FC<ISpeedReaderProps> = ({ currentCursor, onCurrentCur
     return (
       <div style={style} className={s.reader}>
         <span className={isCurrentRow ? s.readerActive : ""}>
-          {
-            sentences[index].split(" ").map((word, i) => {
-              return <span key={i}>{word + ' '}</span>
-            })
-          }
-          {'. '}
+          {sentences[index] + ". "}
         </span>
       </div>
     );
