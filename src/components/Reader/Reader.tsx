@@ -1,73 +1,66 @@
-import React, {useEffect, memo, useRef} from "react";
+import React, {useEffect, memo, useRef, useMemo, useState} from "react";
 import s from './Reader.module.scss'
-import { VariableSizeList as List } from "react-window";
+import {FakeRenderer} from "./FakeRenderer.tsx";
 
 interface ISpeedReaderProps {
   text: string;
   active: boolean;
   wpm?: number;
   currentCursor: number;
-  onCurrentCursorChange: () => void;
+  onCurrentCursorChange: (newValue: number | null) => void;
 }
 
 const _SpeedReader: React.FC<ISpeedReaderProps> = ({ currentCursor, onCurrentCursorChange, active, text, wpm = 300 }) => {
 
-    const sentences = text.split(". ");
-    const listRef = useRef<List | null>(null);
+  const words = useMemo(() => {
+    return text.split(' ')
+  }, [text])
 
-    const speed = 60000 / wpm;
+  const [currentWords, setCurrentWords] = useState<string[]>([]);
+  const [lastWordIndex, setLastWordIndex] = useState(0);
 
-    useEffect(() => {
-        if (!active) {
-            return;
-        }
-        const timer = setTimeout(() => {
-            if (currentCursor < sentences.length - 1) {
-              onCurrentCursorChange();
-            }
-        }, speed);
-
-        return () => {
-            clearTimeout(timer);
-        }
-    }, [active, currentCursor, onCurrentCursorChange, speed, sentences.length]);
+  const wordRef = useRef<HTMLDivElement>(null);
+  const speed = 60000 / wpm;
 
   useEffect(() => {
-    if (listRef.current) {
-      listRef.current.scrollToItem(currentCursor, 'center');
+    if (!active) {
+      return;
     }
-  }, [currentCursor]);
+    const timer = setTimeout(() => {
+      if (currentCursor < currentWords.length - 1) {
+        onCurrentCursorChange(null);
+      } else {
+        setFakeRendererActive(true)
+      }
+    }, speed);
 
-  const getItemSize = () => {
-    return 30;
-  };
+    return () => {
+      clearTimeout(timer);
+    }
+  }, [active, currentCursor, currentWords.length, onCurrentCursorChange, speed]);
 
-  const Row = ({ index, style }: never) => {
-    const isCurrentRow = index === currentCursor;
-    return (
-      <div style={style} className={s.reader}>
-        <span className={isCurrentRow ? s.readerActive : ""}>
-          {sentences[index] + ". "}
-        </span>
-      </div>
-    );
+  const [fakeRendererActive, setFakeRendererActive] = useState(true);
+
+  const goNext = (portion: string[]) => {
+    requestAnimationFrame(() => {
+      onCurrentCursorChange(0)
+      setCurrentWords(portion)
+      console.log('portion', portion.length)
+      setFakeRendererActive(false);
+      setLastWordIndex(prevState => prevState + portion.length);
+      console.log('goNext', Date.now())
+    });
   };
 
   return (
-    <div>
-      <List
-        ref={listRef}
-        height={window.innerHeight} // viewport height
-        itemCount={sentences.length}
-        itemSize={getItemSize}
-        width={window.innerWidth} // viewport width
-        className={s.list}
-      >
-        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-        {/*@ts-ignore*/}
-        {Row}
-      </List>
-    </div>
+    <>
+      {fakeRendererActive && <FakeRenderer words={words.slice(lastWordIndex)} onDone={goNext}/>}
+      <div className={s.reader} ref={wordRef}>
+        {currentWords.map((word, index) => {
+          return <span key={index} className={index === currentCursor ? s.readerActive : ''}>{word + ' '}</span>
+        })}
+      </div>
+    </>
   );
 };
 

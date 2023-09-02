@@ -16,8 +16,13 @@ function App() {
     return 0;
   });
 
-  const handleCurrentCursorChange = useCallback(() => {
-    setCurrentCursor(prevState => prevState + 1)
+  const handleCurrentCursorChange = useCallback((newValue: number | null) => {
+    setCurrentCursor(prevState => {
+      if (newValue === null) {
+        return prevState + 1;
+      }
+      return newValue;
+    })
   }, []);
 
   useEffect(() => {
