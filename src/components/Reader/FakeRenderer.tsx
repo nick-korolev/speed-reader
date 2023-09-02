@@ -13,29 +13,30 @@ const _FakeRenderer: React.FC<IFakeRendererProps> = ({ words, onDone }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const d = Date.now();
 
+  const checkOverflow = () => {
+    if (!rendererRef.current) {
+      return;
+    }
+    const container = rendererRef.current;
+    if (container.scrollHeight > container.clientHeight) {
+      setDone(true);
+      return;
+    }
+    if (currentIndex >= words.length) {
+      setDone(true);
+      return;
+    }
+    setCurrentIndex(prevState => prevState + 1)
+  };
+
   useEffect(() => {
     console.log('render', d, Date.now() - d);
-    const checkOverflow = () => {
-      if (!rendererRef.current) {
-        return;
-      }
-      const container = rendererRef.current;
-      if (container.scrollHeight > container.clientHeight) {
-        setDone(true);
-        return;
-      }
-      if (currentIndex >= words.length) {
-        setDone(true);
-        return;
-      }
-      setCurrentIndex(prevState => prevState + 1)
-      requestAnimationFrame(checkOverflow);
-    };
     checkOverflow();
   }, [words]);
 
   useEffect(() => {
     setPortion(words.slice(0, currentIndex));
+    checkOverflow()
   }, [currentIndex, words]);
 
   useEffect(() => {
@@ -50,7 +51,7 @@ const _FakeRenderer: React.FC<IFakeRendererProps> = ({ words, onDone }) => {
   }, [portion])
 
   return (
-    <div ref={rendererRef} className={s.reader} style={{ visibility: 'hidden', overflow: "auto", height: "100vh" }}>
+    <div ref={rendererRef} className={s.reader} style={{ overflow: "auto", height: "100vh" }}>
       {textHTML}
     </div>
   );
