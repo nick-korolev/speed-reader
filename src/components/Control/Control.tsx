@@ -16,7 +16,7 @@ function cleanText(text: string) {
 
 export const Control: React.FC<IControlProps> = ({wpm, onWPMChange, onTextChange, cursor, onCursorChange}) => {
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    // const worker = new Worker('./worker.js');
+    // const worker = new Worker('./sw.js');
     const file = event.target.files?.[0];
     if (!file) {
       return;
